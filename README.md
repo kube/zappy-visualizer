@@ -4,5 +4,10 @@
 
 * Get npm dependencies
 ```
+npm install
+```
 
+* Compile Node-webkit app and start it
+```
+npm start
 ```
