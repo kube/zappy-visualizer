@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <script type="text/javascript" src="urlParser.js"></script>
-<script type="text/javascript" src="client.js"></script>
 <script type="text/javascript" src="babylon.1.11.js"></script>
 <style>
 
@@ -27,92 +26,44 @@
 
 <script type="text/javascript">
 
+	var net = require('net');
+	var gui = require('nw.gui');
 	var Game = require('./Game.js');
 
-
-	var gui = require('nw.gui');
 	var win = gui.Window.get();
-
-	var canvas = document.getElementById("renderCanvas");
-	var engine = new BABYLON.Engine(canvas, true);
-	var scene = new BABYLON.Scene(engine);
-
-	window.onresize = function(){
-		engine.resize();
-	}
-
-
-
-	var game = new Game(42, 42);
-
-
-
-	var cameras = []
-
-	cameras.push(new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene));
-
-	// cameras.push(new BABYLON.AnaglyphFreeCamera("AnaglyphCamera", new BABYLON.Vector3(0, 2, 4), 0.5, scene));
-
-	cameras.push(new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), scene));
-
+	var config = URL.parse(window.location).params;
+	var game = new Game(BABYLON, window, document);
 
 	document.addEventListener('keydown', function(e){
-
-		console.log(e);
-
 		if (e.keyCode == 13 && e.metaKey)
 			win.toggleFullscreen();
-		else if (e.keyCode == 32) {
+	});
 
-			scene.activeCamera = cameras[(cameras.indexOf(scene.activeCamera) + 1) % cameras.length];
-			scene.activeCamera.attachControl(canvas);
+	var client = new net.Socket();
+	client.connect(config.port, config.host,
+		function() {
+			client.write('msz\n');
+			client.write('sst\n');
+			client.write('sgt\n');
+	});
+
+	client.on('data', function(data) {
+		console.log(data.toString());
+
+		var responses = data.toString().split('\n');
+
+		for (var i in responses) {
+			var args = responses[i].split(' ');
+
+			if (args[0] == 'msz') {
+				game.updateMap(args[1], args[2]);
+				game.run();
+			}
 		}
 	});
 
-
-
-
-
-	var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -2, -1), scene);
-
-
-	canvas.addEventListener('click', function(e) {
-		var pick = scene.pick(e.x, e.y);
-
-		console.log(pick.pickedMesh);
-
-		pick.pickedMesh.position.y += 0.5;
-
-		return false;
-	});
-
-
-
-	for (var i in game.map.blocks) {
-
-		var block = game.map.blocks[i];
-
-		var x = block.x - (game.width / 2);
-		var y = block.y - (game.height / 2);
-
-		var box = BABYLON.Mesh.CreateBox("Box", 0.9, scene);
-		box.position = new BABYLON.Vector3(x, 0, y);
-		box.scaling.y = 0.2;
-	}
-
-
-
-
-	light.position = new BABYLON.Vector3(20, 40, 20);
-
-
-
-	scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
-
-	scene.activeCamera.attachControl(canvas);
-
-	engine.runRenderLoop(function () {
-		scene.render();
+	client.on('end', function() {
+		console.log('Client disconnected');
 	});
 
 </script>

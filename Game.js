@@ -10,6 +10,8 @@ var Map = function(width, height) {
 
 	var self = this;
 
+	this.width = width | 42;
+	this.height = height | 42;
 	this.blocks = [];
 
 	function initBlocks(){
@@ -28,16 +30,69 @@ var Map = function(width, height) {
 	}
 
 	initBlocks();
-
 }
 
 
-var Game = function(options) {
+var Game = function(BABYLON, window, document, options) {
 
-	this.width = options.width | 42;
-	this.height = options.width | 42;
+	var self = this;
 
-	this.map = new Map(this.width, this.height);
+	var canvas = document.getElementById("renderCanvas");
+	var engine = new BABYLON.Engine(canvas, true);
+	var scene = new BABYLON.Scene(engine);
+
+
+	var cameras = []
+	cameras.push(new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene));
+	cameras.push(new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), scene));
+	scene.activeCamera.attachControl(canvas);
+
+	document.addEventListener('keydown', function(e){
+		console.log(e);
+		if (e.keyCode == 32) {
+
+			scene.activeCamera = cameras[(cameras.indexOf(scene.activeCamera) + 1) % cameras.length];
+			scene.activeCamera.attachControl(canvas);
+		}
+	});
+
+	window.onresize = function(){
+		engine.resize();
+	}
+
+	this.updateMap = function(width, height) {	
+		self.map = new Map(width, height);
+	
+		for (var i in self.map.blocks) {
+
+			var block = self.map.blocks[i];
+
+			var x = block.x - (width / 2);
+			var y = block.y - (height / 2);
+
+			var box = BABYLON.Mesh.CreateBox("Box", 1, scene);
+			box.position = new BABYLON.Vector3(x, 0, y);
+			box.scaling.y = 0.2;
+		}
+	}
+
+	var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -2, -1), scene);
+	light.position = new BABYLON.Vector3(20, 40, 20);
+
+
+
+	canvas.addEventListener('click', function(e) {
+		var pick = scene.pick(e.x, e.y);
+		pick.pickedMesh.position.y += 0.5;
+	});
+
+
+	this.run = function() {
+		engine.runRenderLoop(function () {
+			scene.render();
+		});
+	}
+
 
 }
 
