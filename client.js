@@ -7,7 +7,7 @@ client.connect(config.port, config.host,
 	function() {
 		console.log('Connected to ' + config.host + ':' + config.port);
 	client.write('msz\n');
-	client.write('sst');
+	client.write('sst\n');
 	client.write('sgt\n');
 });
 
