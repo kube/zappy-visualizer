@@ -70,8 +70,17 @@ var Game = function(BABYLON, window, document, options) {
 			var x = block.x - (width / 2);
 			var y = block.y - (height / 2);
 
-			var box = BABYLON.Mesh.CreateBox("Box", 1, scene);
+			var sphere = BABYLON.Mesh.CreateSphere("Sphere", 10, 1, scene);
+			sphere.position = new BABYLON.Vector3(x, 2, y);
+			sphere.onclick = function(e, pick){
+				pick.pickedMesh.position.y += 0.5;
+			}
+
+			var box = BABYLON.Mesh.CreateBox("Box", 0.94, scene);
 			box.position = new BABYLON.Vector3(x, 0, y);
+			box.onclick = function(e, pick){
+				pick.pickedMesh.position.y += 0.5;
+			}
 			box.scaling.y = 0.2;
 		}
 	}
@@ -83,7 +92,7 @@ var Game = function(BABYLON, window, document, options) {
 
 	canvas.addEventListener('click', function(e) {
 		var pick = scene.pick(e.x, e.y);
-		pick.pickedMesh.position.y += 0.5;
+		pick.pickedMesh.onclick(e, pick);
 	});
 
 
