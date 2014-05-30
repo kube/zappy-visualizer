@@ -3,6 +3,7 @@ var Block = function(x, y) {
 
 	this.x = x;
 	this.y = y;
+	this.mesh = null;
 
 }
 
@@ -71,7 +72,13 @@ var Game = function(BABYLON, window, document, options) {
 			var y = block.y - (height / 2);
 
 			var sphere = BABYLON.Mesh.CreateSphere("Sphere", 10, 1, scene);
-			sphere.position = new BABYLON.Vector3(x, 2, y);
+			
+			sphere.position = new BABYLON.Vector3(x, 11, y);
+			sphere.setPhysicsState({
+				impostor: BABYLON.PhysicsEngine.SphereImpostor, mass: 1000
+			});
+
+
 			sphere.onclick = function(e, pick){
 				pick.pickedMesh.position.y += 0.5;
 			}
@@ -82,8 +89,14 @@ var Game = function(BABYLON, window, document, options) {
 				pick.pickedMesh.position.y += 0.5;
 			}
 			box.scaling.y = 0.2;
+
+
+
+			self.map.blocks[i].mesh = sphere;
 		}
 	}
+	scene.setGravity(new BABYLON.Vector3(0, -10, 0));
+	scene.enablePhysics();
 
 	var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -2, -1), scene);
 	light.position = new BABYLON.Vector3(20, 40, 20);
@@ -97,7 +110,16 @@ var Game = function(BABYLON, window, document, options) {
 
 
 	this.run = function() {
+
+
+
 		engine.runRenderLoop(function () {
+
+
+			for (var i in self.map.blocks) {
+				// console.log(self.map.blocks[i].mesh.position);
+				self.map.blocks[i].mesh.position.y += 0.01;
+			}
 			scene.render();
 		});
 	}
