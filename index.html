@@ -5,21 +5,107 @@
 	var gui = require('nw.gui');
 	var win = gui.Window.get();
 	win.title = "Zappy";
-	win.width = 1200;
-	win.height = 800;
+	win.width = 900;
+	win.height = 600;
 
-</script>>
+</script>
 <style>
-	body
-	{
-		background: #000;
-		/*user-select: none;*/
+
+	html {
+		height: 100%;
+		-webkit-box-sizing: border-box;
+		border: 1px solid #444;
 	}
+
+	body {
+		background: #000;
+		-webkit-user-select: none;
+		margin-top: 40px;
+	}
+
+	#loginForm {
+		width: 100%;
+		position: absolute;
+		top: 30%; left: 0; right: 0; bottom: 0;
+		text-align: center;
+	}
+
+	input[type="text"],
+	input[type="password"]{
+		border: solid 1px #E5E5E5;
+		background: #FFFFFF;
+		text-align: center;
+		margin: 5px auto;
+		padding: 9px;
+		display:block;
+		font-size:16px;
+		width:30%;
+		min-width: 250px;
+		background:
+		-webkit-gradient(
+			linear,
+			left top,
+			left 25,
+			from(#FFFFFF),
+			color-stop(4%, #EEEEEE),
+			to(#FFFFFF)
+		);
+		background:
+		-moz-linear-gradient(
+			top,
+			#FFFFFF,
+			#EEEEEE 1px,
+			#FFFFFF 25px
+		);
+	}
+
+	input[type="text"]:focus,
+	input[type="password"]:focus{
+		background:#FFF;
+		box-shadow: none;
+	}
+
+	label {
+		font-family: "Trebuchet MS", "Myriad Pro", sans-serif;
+		font-size: 16px;
+		color: #AAA;
+	}
+
+	button[type="submit"] {
+		background: #d9d9d9;
+		border: 1px solid #ccc;
+		color: #333;
+		font-family: "Trebuchet MS", "Myriad Pro", sans-serif;
+		font-size: 14px;
+		font-weight: bold;
+		padding: 8px 0 9px;
+		text-align: center;
+		width: 150px;
+		cursor:pointer;
+		margin: 5px auto;
+		border-radius: 4px;
+	}
+ 
+	button[type="submit"]:hover {
+		background: #e6e6e6;
+		color: #222;
+	}
+
 </style>
-<body style="-webkit-app-region: drag">
-	<h1>Connection</h1>
+<link rel="stylesheet" href="./style.css">
+<body>
+	<div id="dragger" style="-webkit-app-region: drag">
+		<a id="btn_hide" style="-webkit-app-region: no-drag"
+			onclick="javascript:win.minimize();"></a>
+		<a id="btn_resize" style="-webkit-app-region: no-drag"
+			onclick="javascript:win.toggleFullscreen();"></a>
+		<a id="btn_close" style="-webkit-app-region: no-drag"
+			onclick="javascript:gui.App.quit();"></a>
+	</div>
 	<form id='loginForm' action='game.html'>
+		<label for='host'>Host</label>
 		<input id='hostField' name='host' type='text' placeholder='host' value='localhost'>
+		<label for='port'>Port</label>
 		<input id='portField' name='port' type='text' placeholder='port' value='1337'>
 		<button type='submit'>Login</button>
 	</form>

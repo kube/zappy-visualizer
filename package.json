@@ -2,8 +2,8 @@
 	"name": "Zappy",
 	"main": "index.html",
 	"scripts": {
-		"start": "rm -f app.nw && zip -r app.nw . && nodewebkit app.nw"
-		
+		"build": "zip -r app.nw .",
+		"start": "nodewebkit ./app.nw"
 	},
 	"dependencies": {
 		"jade": "*"
@@ -13,6 +13,6 @@
 	},
 	"window":{
 		"frame": false,
-		"toolbar": true
+		"toolbar": false
 	}
 }

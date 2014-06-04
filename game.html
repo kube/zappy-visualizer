@@ -6,6 +6,7 @@
 
 	html, body {
 		background-color: #000000;
+		user-select: none;
 	}
 
 	html, body, div, canvas {
@@ -17,10 +18,19 @@
 	}
 
 </style>
-<body style="-webkit-app-region: drag">
-<div id="rootDiv">
-  <canvas id="renderCanvas"></canvas>
-</div>
+<link rel="stylesheet" href="./style.css">
+<body>
+	<div id="rootDiv">
+		<div id="dragger" style="-webkit-app-region: drag">
+			<a id="btn_hide" style="-webkit-app-region: no-drag"
+				onclick="javascript:win.minimize();"></a>
+			<a id="btn_resize" style="-webkit-app-region: no-drag"
+				onclick="javascript:win.toggleFullscreen();"></a>
+			<a id="btn_close" style="-webkit-app-region: no-drag"
+				onclick="javascript:gui.App.quit();"></a>
+		</div>
+		<canvas id="renderCanvas"></canvas>
+	</div>
 </body>
 </html>
 
@@ -33,12 +43,6 @@
 	var win = gui.Window.get();
 	var config = URL.parse(window.location).params;
 	var game = new Game(BABYLON, window, document);
-
-	document.addEventListener('keydown', function(e){
-		if (e.keyCode == 13 && e.metaKey)
-			win.toggleFullscreen();
-	});
-
 
 	var client = new net.Socket();
 	client.connect(config.port, config.host,

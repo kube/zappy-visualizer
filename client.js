@@ -23,7 +23,7 @@ client.on('data', function(data) {
 		var args = responses[i].split(' ');
 
 		if (args[0] == 'msz') {
-			game.updateMap(args[1], args[2]);
+			game.updateMap(42, 42);
 			game.run();
 		}
 	}

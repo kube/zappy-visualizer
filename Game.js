@@ -10,7 +10,7 @@ var Block = function(x, y) {
 var Map = function(width, height) {
 
 	var self = this;
-
+	
 	this.width = width | 42;
 	this.height = height | 42;
 	this.blocks = [];
