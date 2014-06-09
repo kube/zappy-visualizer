@@ -1,14 +1,11 @@
 
 var Block = function(x, y) {
-
 	this.x = x;
 	this.y = y;
 	this.mesh = null;
-
 }
 
 var Map = function(width, height) {
-
 	var self = this;
 	
 	this.width = width | 42;
@@ -35,7 +32,6 @@ var Map = function(width, height) {
 
 
 var Game = function(BABYLON, window, document, options) {
-
 	var self = this;
 
 	var canvas = document.getElementById("renderCanvas");

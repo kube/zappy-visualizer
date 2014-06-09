@@ -12,7 +12,7 @@
 		"plugin": true
 	},
 	"window":{
-		"frame": false,
-		"toolbar": false
+		"frame": true,
+		"toolbar": true
 	}
 }
