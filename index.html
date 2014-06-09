@@ -34,6 +34,25 @@
 					client.write('msz\n');
 					client.write('sst\n');
 					client.write('sgt\n');
+
+			});
+
+			console.log(client);
+
+
+			setTimeout(function() {
+				console.log("Destroying connection");
+				client.destroy();
+			}, 2000)
+
+
+			client.on('close', function(data) {
+				console.log(data);
+
+				$("#loginForm").show();
+				$("#renderCanvas").hide();
+				// Destroy current Babylon instance!
+				// Clean Canvas
 			});
 
 			client.on('data', function(data) {

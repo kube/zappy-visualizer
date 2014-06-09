@@ -1,4 +1,3 @@
-
 var Block = function(x, y) {
 	this.x = x;
 	this.y = y;
@@ -7,9 +6,12 @@ var Block = function(x, y) {
 
 var Map = function(width, height) {
 	var self = this;
-	
-	this.width = width | 42;
-	this.height = height | 42;
+
+	if (height <= 0 || width <= 0)
+		throw new Error("Invalid Map size");
+
+	this.width = width;
+	this.height = height;
 	this.blocks = [];
 
 	function initBlocks(){
@@ -37,7 +39,6 @@ var Game = function(BABYLON, window, document, options) {
 	var canvas = document.getElementById("renderCanvas");
 	var engine = new BABYLON.Engine(canvas, true);
 	var scene = new BABYLON.Scene(engine);
-
 
 	var cameras = []
 	cameras.push(new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene));
@@ -86,8 +87,6 @@ var Game = function(BABYLON, window, document, options) {
 			}
 			box.scaling.y = 0.2;
 
-
-
 			self.map.blocks[i].mesh = sphere;
 		}
 	}
@@ -97,21 +96,13 @@ var Game = function(BABYLON, window, document, options) {
 	var light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(-1, -2, -1), scene);
 	light.position = new BABYLON.Vector3(20, 40, 20);
 
-
-
 	canvas.addEventListener('click', function(e) {
 		var pick = scene.pick(e.x, e.y);
 		pick.pickedMesh.onclick(e, pick);
 	});
 
-
 	this.run = function() {
-
-
-
 		engine.runRenderLoop(function () {
-
-
 			for (var i in self.map.blocks) {
 				// console.log(self.map.blocks[i].mesh.position);
 				self.map.blocks[i].mesh.position.y += 0.01;
