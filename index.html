@@ -13,14 +13,20 @@
 	win.width = 900;
 	win.height = 600;
 
+	function displayConnectionForm() {
+		$("#loginForm").show();
+		$("#renderCanvas").hide();
+	}
+
+	function displayGame() {
+		$("#loginForm").hide();
+		$("#renderCanvas").show();
+	}
 
 	function connectToServer(host, port) {
 
-
-		$("#loginForm").hide();
-		$("#renderCanvas").show();
-
 		console.log('Trying to connect to ' + host + ':' + port);
+		displayGame();
 
 		// Catch connection error (later)
 		try {
@@ -29,30 +35,27 @@
 
 			client.connect(port, host,
 				function() {
-					console.log("Hello World!");
-
 					client.write('msz\n');
 					client.write('sst\n');
 					client.write('sgt\n');
-
 			});
-
-			console.log(client);
-
 
 			setTimeout(function() {
 				console.log("Destroying connection");
 				client.destroy();
 			}, 2000)
 
+			client.on('close', function() {
+				console.log(game);
 
-			client.on('close', function(data) {
-				console.log(data);
-
-				$("#loginForm").show();
-				$("#renderCanvas").hide();
+				// Destroy Game instance
 				// Destroy current Babylon instance!
 				// Clean Canvas
+				console.log(game.getScene());
+				console.log(game.getEngine());
+				displayConnectionForm();
+				game.clear();
+				game = null;
 			});
 
 			client.on('data', function(data) {
@@ -75,15 +78,11 @@
 			client.on('end', function() {
 				console.log('Client disconnected');
 			});
-
 		}
 		catch(e) {
 
-			$("#loginForm").show();
-			$("#renderCanvas").hide();
-
+			displayConnectionForm();
 			console.error("Cannot connect to specified server.");
-
 			console.error(e);
 		}
 	}
@@ -96,105 +95,6 @@
 	}
 
 </script>
-<style>
-
-
-	html, body {
-		background-color: #000000;
-		user-select: none;
-	}
-
-	html, body, div, canvas {
-		width: 100%;
-		height: 100%;
-		padding: 0;
-		margin: 0;
-		overflow: hidden;
-	}
-
-	html {
-		-webkit-box-sizing: border-box;
-		border: 1px solid #444;
-	}
-
-	body {
-		background: #000;
-		-webkit-user-select: none;
-	}
-
-	#loginForm {
-		width: 100%;
-		position: absolute;
-		top: 30%; left: 0; right: 0; bottom: 0;
-		text-align: center;
-	}
-
-	input[type="text"],
-	input[type="password"]{
-		border: solid 1px #E5E5E5;
-		background: #FFFFFF;
-		text-align: center;
-		margin: 5px auto;
-		padding: 9px;
-		display:block;
-		font-size:16px;
-		width:30%;
-		min-width: 250px;
-		background:
-		-webkit-gradient(
-			linear,
-			left top,
-			left 25,
-			from(#FFFFFF),
-			color-stop(4%, #EEEEEE),
-			to(#FFFFFF)
-		);
-		background:
-		-moz-linear-gradient(
-			top,
-			#FFFFFF,
-			#EEEEEE 1px,
-			#FFFFFF 25px
-		);
-	}
-
-	input[type="text"]:focus,
-	input[type="password"]:focus{
-		background:#FFF;
-		box-shadow: none;
-	}
-
-	label {
-		font-family: "Trebuchet MS", "Myriad Pro", sans-serif;
-		font-size: 16px;
-		color: #AAA;
-	}
-
-	button[type="submit"] {
-		background: #d9d9d9;
-		border: 1px solid #ccc;
-		color: #333;
-		font-family: "Trebuchet MS", "Myriad Pro", sans-serif;
-		font-size: 14px;
-		font-weight: bold;
-		padding: 8px 0 9px;
-		text-align: center;
-		width: 150px;
-		cursor:pointer;
-		margin: 5px auto;
-		border-radius: 4px;
-	}
- 
-	button[type="submit"]:hover {
-		background: #e6e6e6;
-		color: #222;
-	}
-
-	#renderCanvas {
-		display: none;
-	}
-
-</style>
 <link rel="stylesheet" href="./style.css">
 <body>
 	<div id="dragger" style="-webkit-app-region: drag">

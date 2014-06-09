@@ -39,6 +39,7 @@ var Game = function(BABYLON, window, document, options) {
 	var canvas = document.getElementById("renderCanvas");
 	var engine = new BABYLON.Engine(canvas, true);
 	var scene = new BABYLON.Scene(engine);
+	scene.clearColor = new BABYLON.Color3(0, 0, 0);
 
 	var cameras = []
 	cameras.push(new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene));
@@ -54,9 +55,18 @@ var Game = function(BABYLON, window, document, options) {
 		}
 	});
 
+
+	this.clear = function() {
+		engine.stopRenderLoop();
+	}
+
+
 	window.onresize = function(){
 		engine.resize();
 	}
+
+	this.getScene = function() {return scene;}
+	this.getEngine = function() {return engine;}
 
 	this.updateMap = function(width, height) {	
 		self.map = new Map(width, height);
