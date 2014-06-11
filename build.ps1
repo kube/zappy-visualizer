@@ -1,1 +1,0 @@
-Get-Childitem . -Recurse | Write-Zip -OutputPath app.nw

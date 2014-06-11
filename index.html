@@ -1,103 +1,13 @@
 <!DOCTYPE html>
 <html>
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="babylon.1.11.js"></script>
-<script type="text/javascript">
-
-	net = require('net');
-	var gui = require('nw.gui');
-	Game = require('./Game.js');
-
-	var win = gui.Window.get();
-	win.title = "Zappy";
-	win.width = 900;
-	win.height = 600;
-
-	function displayConnectionForm() {
-		$("#loginForm").show();
-		$("#renderCanvas").hide();
-	}
-
-	function displayGame() {
-		$("#loginForm").hide();
-		$("#renderCanvas").show();
-	}
-
-	function connectToServer(host, port) {
-
-		console.log('Trying to connect to ' + host + ':' + port);
-		displayGame();
-
-		// Catch connection error (later)
-		try {
-			var client = new net.Socket();
-			var game = new Game(BABYLON, window, document);
-
-			client.connect(port, host,
-				function() {
-					client.write('msz\n');
-					client.write('sst\n');
-					client.write('sgt\n');
-			});
-
-			setTimeout(function() {
-				console.log("Destroying connection");
-				client.destroy();
-			}, 5000)
-
-			client.on('close', function() {
-				console.log(game);
-
-				// Destroy Game instance
-				// Destroy current Babylon instance!
-				// Clean Canvas
-				console.log(game.getScene());
-				console.log(game.getEngine());
-				displayConnectionForm();
-				game.clear();
-				game = null;
-			});
-
-			client.on('data', function(data) {
-				console.log(data.toString());
-
-				// Think about splitted sockets!
-				// Should split sockets at carriage return and keep the last part to be completed by next socket.
-				var responses = data.toString().split('\n');
-
-				for (var i in responses) {
-					var args = responses[i].split(' ');
-
-					if (args[0] == 'msz') {
-						game.updateMap(args[1], args[2]);
-						game.run();
-					}
-				}
-			});
-
-			client.on('end', function() {
-				console.log('Client disconnected');
-			});
-		}
-		catch(e) {
-
-			displayConnectionForm();
-			console.error("Cannot connect to specified server.");
-			console.error(e);
-		}
-	}
-
-	function validateConnectionForm() {
-
-		connectToServer(
-			document.getElementById('hostField').value,
-			document.getElementById('portField').value);
-	}
-
-</script>
+<script type="text/javascript" src="vendor/jquery.js"></script>
+<script type="text/javascript" src="vendor/babylon.1.11.js"></script>
+<script type="text/javascript" src="zappy.js"></script>
 <link rel="stylesheet" href="./style.css">
 <body>
 	<div id="dragger" style="-webkit-app-region: drag">
+		<a id="btn_back" style="-webkit-app-region: no-drag"></a>
+
 		<a id="btn_hide" style="-webkit-app-region: no-drag"
 			onclick="javascript:win.minimize();"></a>
 		<a id="btn_resize" style="-webkit-app-region: no-drag"
