@@ -1,6 +1,7 @@
-net = require('net');
+var net = require('net');
 var gui = require('nw.gui');
 Game = require('./Game.js');
+global.BABYLON = BABYLON;
 
 process.on('uncaughtException', function(e) {
 	console.log(e);
@@ -35,83 +36,55 @@ function destroySession(client, game) {
 
 function connectToServer(host, port) {
 
-	console.log('Trying to connect to ' + host + ':' + port);
 	displayGame();
 
-	// Catch connection error (later)
-	try {
-		var client = new net.Socket();
-		var game = new Game(BABYLON, window, document);
+	var client = new net.Socket();
+	var game = new Game();
+	global.game = game;
 
-		// Attach event to Back button
-		document.getElementById('btn_back').addEventListener('click', function _func() {
-			console.log('OK');
-			destroySession(client, game);
-			document.getElementById('btn_back').removeEventListener('click', _func);
-		});
+	// Attach event to Back button
+	document.getElementById('btn_back').addEventListener('click', function _func() {
+		destroySession(client, game);
+		document.getElementById('btn_back').removeEventListener('click', _func);
+	});
 
-		client.connect(port, host,
-			function() {
-				client.write('msz\n');
-		});
+	client.connect(port, host,
+		function() {
+			client.write('msz\n');
+	});
 
-		client.on('close', function() {
-			// console.log(game);
+	client.on('close', function() {
+		destroySession(client, game);
+		game.clear();
+		game = null;
+	});
 
-			// Destroy Game instance
-			// Destroy current Babylon instance!
-			// Clean Canvas
-			// console.log(game.getScene());
-			// console.log(game.getEngine());
-			displayConnectionForm();
-			game.clear();
-			game = null;
+	client.on('data', function(data) {
+		// Think about splitted sockets!
+		// Should split sockets at carriage return and keep the last part to be completed by next socket.
+		var responses = data.toString().split('\n');
+		for (var i in responses) {
+			var args = responses[i].split(' ');
 
-		});
-
-		client.on('data', function(data) {
-			console.log(data.toString());
-
-			// Think about splitted sockets!
-			// Should split sockets at carriage return and keep the last part to be completed by next socket.
-			var responses = data.toString().split('\n');
-
-			for (var i in responses) {
-				var args = responses[i].split(' ');
-				console.log(args);
-
-				/*
-				**	Responses parsing, will be bettered and put in another file
-				*/
-				if (args[0] == 'msz') {
-					game.createMap(args[1], args[2]);
-					// game.map.createBot();
-					game.run();
-					console.log('Asking MCT ?');
-					client.write('mct\n');
-				}
-				else if (args[0] == 'bct') {
-					// console.log(args);
-
-					for (var i = 3; i < 10; i++)
-						game.map.blocks[parseInt(args[1])][parseInt(args[2])].ressources[i - 3].update(parseInt(args[i]));
-					// game.createBot(args[1], args[2], args[3], args[4]);
-					// game.run();
-				}
+			/*
+			**	Responses parsing, will be bettered and put in another file
+			*/
+			if (args[0] == 'msz') {
+				game.createMap(args[1], args[2]);
+				game.run();
+				client.write('mct\n');
 			}
-		});
+			else if (args[0] == 'bct') {
+				for (var i = 3; i < 10; i++)
+					game.map.blocks[parseInt(args[1])][parseInt(args[2])].ressources[i - 3].update(parseInt(args[i]));
+			}
+		}
+	});
 
-		client.on('end', function() {
-			console.log('Client disconnected');
-			destroySession(client, game);
-		});
-	}
-	catch(e) {
-
-
-		console.error("Cannot connect to specified server.");
-		console.error(e);
-	}
+	client.on('end', function() {
+		console.log('Client disconnected');
+		destroySession(client, game);
+	});
 }
 
 function validateConnectionForm() {

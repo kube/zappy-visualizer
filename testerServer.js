@@ -1,9 +1,11 @@
 var net = require('net');
 
 var	minMapX = 4,
-	maxMapX = 13,
+	maxMapX = 22,
 	minMapY = 4,
-	maxMapY = 13;
+	maxMapY = 22;
+
+var	stoneMax = 11;
 
 /////////
 
@@ -12,13 +14,13 @@ var Case = function(x, y) {
 	var _x = x;
 	var _y = y;
 
-	var a = Math.floor(Math.random() * 10);
-	var b = Math.floor(Math.random() * 10);
-	var c = Math.floor(Math.random() * 10);
-	var d = Math.floor(Math.random() * 10);
-	var e = Math.floor(Math.random() * 10);
-	var f = Math.floor(Math.random() * 10);
-	var g = Math.floor(Math.random() * 10);
+	var a = Math.floor(Math.random() * stoneMax);
+	var b = Math.floor(Math.random() * stoneMax);
+	var c = Math.floor(Math.random() * stoneMax);
+	var d = Math.floor(Math.random() * stoneMax);
+	var e = Math.floor(Math.random() * stoneMax);
+	var f = Math.floor(Math.random() * stoneMax);
+	var g = Math.floor(Math.random() * stoneMax);
 
 	this.toString = function() {
 		return ('bct '+_x+' '+_y+' '+a+ ' '+b+ ' '+c+ ' '+d+' '+e+' '+f+' '+g+'\n');
@@ -46,9 +48,8 @@ function generateRandomMap() {
 	map.getContent = function() {
 		var content = '';
 		for (var i = 0; i < _width; i++) {
-			for (var j = 0; j < _height; j++) {
+			for (var j = 0; j < _height; j++)
 				content += map[i][j].toString();
-			}
 		}
 		return content;
 	}
