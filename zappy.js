@@ -2,7 +2,6 @@ net = require('net');
 var gui = require('nw.gui');
 Game = require('./Game.js');
 
-
 process.on('uncaughtException', function(e) {
 	console.log(e);
 
@@ -12,14 +11,10 @@ process.on('uncaughtException', function(e) {
 	}
 });
 
-
-
 var win = gui.Window.get();
 win.title = "Zappy";
-win.width = 900;
-win.height = 600;
-
-
+win.width = 1300;
+win.height = 900;
 
 function displayConnectionForm() {
 	$("#loginForm").show();
@@ -58,17 +53,16 @@ function connectToServer(host, port) {
 		client.connect(port, host,
 			function() {
 				client.write('msz\n');
-				client.write('sgt\n');
 		});
 
 		client.on('close', function() {
-			console.log(game);
+			// console.log(game);
 
 			// Destroy Game instance
 			// Destroy current Babylon instance!
 			// Clean Canvas
-			console.log(game.getScene());
-			console.log(game.getEngine());
+			// console.log(game.getScene());
+			// console.log(game.getEngine());
 			displayConnectionForm();
 			game.clear();
 			game = null;
@@ -84,25 +78,32 @@ function connectToServer(host, port) {
 
 			for (var i in responses) {
 				var args = responses[i].split(' ');
+				console.log(args);
 
 				/*
 				**	Responses parsing, will be bettered and put in another file
 				*/
 				if (args[0] == 'msz') {
-					game.updateMap(args[1], args[2]);
+					game.createMap(args[1], args[2]);
 					// game.map.createBot();
 					game.run();
+					console.log('Asking MCT ?');
+					client.write('mct\n');
 				}
-				else if (args[0] == 'pnw') {
-					game.createBot(args[1], args[2], args[3], args[4]);
-					// game.map.createBot();
-					game.run();
+				else if (args[0] == 'bct') {
+					// console.log(args);
+
+					for (var i = 3; i < 10; i++)
+						game.map.blocks[parseInt(args[1])][parseInt(args[2])].ressources[i - 3].update(parseInt(args[i]));
+					// game.createBot(args[1], args[2], args[3], args[4]);
+					// game.run();
 				}
 			}
 		});
 
 		client.on('end', function() {
 			console.log('Client disconnected');
+			destroySession(client, game);
 		});
 	}
 	catch(e) {
