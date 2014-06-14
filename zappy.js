@@ -1,16 +1,19 @@
-var net = require('net');
-var gui = require('nw.gui');
-var Game = require('./Game.js');
-global.BABYLON = BABYLON;
+var	net = require('net'),
+	gui = require('nw.gui'),
+	Game = require('./Game.js');
 
-process.on('uncaughtException', function(e) {
-	console.log(e);
+global.THREE = THREE,
+global.requestAnimationFrame = requestAnimationFrame;
 
-	if (e.code == "ECONNREFUSED") {
-		console.log("Cannot reach the server");
-		displayConnectionForm();
-	}
-});
+// process.on('uncaughtException', function(e) {
+// 	console.log(e);
+// 	console.log(e.message);
+
+// 	if (e.code == "ECONNREFUSED") {
+// 		console.log("Cannot reach the server");
+// 		displayConnectionForm();
+// 	}
+// });
 
 var win = gui.Window.get();
 win.title = "Zappy";
