@@ -6,10 +6,6 @@
 		"start": "nodewebkit ./app.nw"
 	},
 	"dependencies": {
-		"jade": "*"
-	},
-	"webkit": {
-		"plugin": true
 	},
 	"window":{
 		"frame": true,

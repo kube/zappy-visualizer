@@ -1,6 +1,6 @@
 var net = require('net');
 var gui = require('nw.gui');
-Game = require('./Game.js');
+var Game = require('./Game.js');
 global.BABYLON = BABYLON;
 
 process.on('uncaughtException', function(e) {
@@ -35,12 +35,10 @@ function destroySession(client, game) {
 }
 
 function connectToServer(host, port) {
-
 	displayGame();
 
 	var client = new net.Socket();
 	var game = new Game();
-	global.game = game;
 
 	// Attach event to Back button
 	document.getElementById('btn_back').addEventListener('click', function _func() {

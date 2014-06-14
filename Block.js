@@ -1,7 +1,8 @@
 var Ressource = require('./Ressource.js');
 
-var Block = function(x, y, map) {
+var Block = function(map, x, y) {
 	var self = this;
+	var game = map.game;
 
 	this.x = x;
 	this.y = y;
@@ -14,7 +15,7 @@ var Block = function(x, y, map) {
 
 	this.ressources = [];
 	for (var i = 0; i < 7; i++)
-		this.ressources[i] = new Ressource(x, y, i, this);
+		this.ressources[i] = new Ressource(this, x, y, i);
 
 	function createMesh() {
 		self.mesh = BABYLON.Mesh.CreateBox("Box", 0.94, game.scene);
