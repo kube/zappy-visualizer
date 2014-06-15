@@ -2,18 +2,16 @@
 <html>
 <script type="text/javascript" src="vendor/jquery.js"></script>
 <script type="text/javascript" src="vendor/three.min.js"></script>
+<script type="text/javascript" src="vendor/OrbitControl.js"></script>
 <script type="text/javascript" src="zappy.js"></script>
 <link rel="stylesheet" href="./style.css">
 <body>
 	<div id="dragger" style="-webkit-app-region: drag">
-		<a id="btn_back" style="-webkit-app-region: no-drag"></a>
+		<a id="btnBack" class="back nodrag"></a>
 
-		<a id="btn_hide" style="-webkit-app-region: no-drag"
-			onclick="javascript:win.minimize();"></a>
-		<a id="btn_resize" style="-webkit-app-region: no-drag"
-			onclick="javascript:win.toggleFullscreen();"></a>
-		<a id="btn_close" style="-webkit-app-region: no-drag"
-			onclick="javascript:gui.App.quit();"></a>
+		<a class="hide nodrag" onclick="javascript:win.minimize();"></a>
+		<a class="resize nodrag" onclick="javascript:win.toggleFullscreen();"></a>
+		<a class="close nodrag" onclick="javascript:gui.App.quit();"></a>
 	</div>
 	<form id='loginForm' action='javascript:validateConnectionForm();'>
 		<label for='host'>Host</label>

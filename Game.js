@@ -8,67 +8,92 @@ var Game = function(options) {
 	global.game = this;
 
 	var canvas = document.getElementById("renderCanvas");
-	// var engine = new BABYLON.Engine(canvas, true);
-	// var scene = new BABYLON.Scene(engine);
 	var scene = new THREE.Scene();
+	var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	camera.position.z = 5;
+	var controls = new THREE.OrbitControls(camera);
+	var renderer = new THREE.WebGLRenderer({
+		canvas: canvas
+	});
+	renderer.setSize(window.innerWidth, window.innerHeight);
 
-	var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+	var light = new THREE.PointLight(0xFFFFFF, 100, 100);
+	light.position.set(30, -30, 10);
+	scene.add(light);
 
-	// var cameras = [];
 
 	this.scene = scene;
-	// this.engine = engine;
+	this.renderer = renderer;
+	this.materials = {
+
+		basic: new THREE.MeshBasicMaterial({
+			color: 0x37363f
+		}),
+		block: new THREE.MeshLambertMaterial({
+			color: 0x37363f,
+			shading: THREE.FlatShading
+		}),
+
+		ressources: [
+			new THREE.MeshLambertMaterial({
+				color: 0xdacd60,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0xda428c,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0x8046db,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0x40abdb,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0x47dc37,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0xdc6a28,
+				shading: THREE.FlatShading
+			}),
+			new THREE.MeshLambertMaterial({
+				color: 0xb1dc41,
+				shading: THREE.FlatShading
+			})
+		]
+	};
+
+
 	this.bots = [];
 
-	var renderer = new THREE.WebGLRenderer({
-		canvas: canvas,
-		antialiasing: true
+
+	pickMesh = function(x, y) {
+		var projector = new THREE.Projector();
+		var vector = new THREE.Vector3(( x / window.innerWidth ) * 2 - 1, -( y / window.innerHeight ) * 2 + 1, 0.5);
+		projector.unprojectVector(vector, camera);
+		var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+		var intersects = raycaster.intersectObjects(scene.children);
+		return intersects[0];
+	}
+
+	canvas.addEventListener('click', function(e) {
+		var pick = pickMesh(e.x, e.y);
+		if (pick.object && typeof pick.object.onclick == 'function')
+			pick.object.onclick(e);
 	});
-	renderer.setSize( window.innerWidth, window.innerHeight );
 
-
-	var geometry = new THREE.BoxGeometry(1,1,1);
-	var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-	var cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
-
-	camera.position.z = 5;
-
-	// scene.clearColor = new BABYLON.Color3(0, 0, 0);
-	// cameras.push(new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene));
-	// cameras.push(new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), scene));
-	// scene.activeCamera.attachControl(canvas);
-	// scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-
-	// var light = new BABYLON.PointLight("Omni0", new BABYLON.Vector3(1, 10, 1), scene);
-	// light.position = new BABYLON.Vector3(20, 40, 20);
-
-	// canvas.addEventListener('click', function(e) {
-	// 	var pick = scene.pick(e.x, e.y);
-	// 	if (pick.pickedMesh && typeof pick.pickedMesh.onclick == 'function')
-	// 		pick.pickedMesh.onclick(e, pick);
-	// });
-
-	// document.addEventListener('keydown', function(e) {
-	// 	if (e.keyCode == 32) {
-	// 		// scene.activeCamera = cameras[(cameras.indexOf(scene.activeCamera) + 1) % cameras.length];
-	// 		// scene.activeCamera.attachControl(canvas);
-	// 	}
-	// });
-
-
-	var render = function () {
-
-		// requestAnimationFrame(this);
-
-		cube.rotation.x += 0.02;
-		cube.rotation.y += 0.02;
-
+	function runRenderLoop() {
+		window.requestAnimationFrame(runRenderLoop);
 		renderer.render(scene, camera);
 	};
 
 	window.onresize = function() {
-		engine.resize();
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth, window.innerHeight);
 	}
 
 	this.createMap = function(width, height) {
@@ -82,14 +107,7 @@ var Game = function(options) {
 	}
 
 	this.run = function() {
-
-		// render();
-
-		setInterval(render, 13);
-
-		// engine.runRenderLoop(function () {
-		// 	scene.render();
-		// });
+		runRenderLoop();
 	}
 
 	this.clear = function() {

@@ -2,18 +2,17 @@ var	net = require('net'),
 	gui = require('nw.gui'),
 	Game = require('./Game.js');
 
-global.THREE = THREE,
-global.requestAnimationFrame = requestAnimationFrame;
+global.THREE = THREE;
 
-// process.on('uncaughtException', function(e) {
-// 	console.log(e);
-// 	console.log(e.message);
+process.on('uncaughtException', function(e) {
+	console.log(e);
+	console.log(e.message);
 
-// 	if (e.code == "ECONNREFUSED") {
-// 		console.log("Cannot reach the server");
-// 		displayConnectionForm();
-// 	}
-// });
+	if (e.code == "ECONNREFUSED") {
+		console.log("Cannot reach the server");
+		displayConnectionForm();
+	}
+});
 
 var win = gui.Window.get();
 win.title = "Zappy";
@@ -44,9 +43,9 @@ function connectToServer(host, port) {
 	var game = new Game();
 
 	// Attach event to Back button
-	document.getElementById('btn_back').addEventListener('click', function _func() {
+	document.getElementById('btnBack').addEventListener('click', function _func() {
 		destroySession(client, game);
-		document.getElementById('btn_back').removeEventListener('click', _func);
+		document.getElementById('btnBack').removeEventListener('click', _func);
 	});
 
 	client.connect(port, host,

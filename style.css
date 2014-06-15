@@ -1,48 +1,9 @@
-#btn_close, #btn_resize, #btn_hide
-{
-	z-index: 2000;
-	content: '';
-	border: 0px solid #000;
-	background: #AAA;
-	padding: 0;
-	width: 14px;
-	height: 14px; line-height: 3px;
-	top: 8px; right: 8px;
-	font-size: xx-small;
-	overflow: hidden;
-	position: absolute;
-	border-radius: 7px;
-	-webkit-transition-property: all;
-	-webkit-transition-duration: 0.3s;
+.nodrag {
 	-webkit-app-region: no-drag;
-	color: #CCC;
-	opacity: 1.0;
 }
 
-#btn_close:hover, #btn_resize:hover, #btn_hide:hover
-{
-	opacity: 1.0;
-}
-
-#btn_back
-{
-	z-index: 2000;
-	content: '';
-	border: 0px solid #000;
-	background: #AAA;
-	padding: 0;
-	width: 22px;
-	height: 22px; line-height: 3px;
-	top: 8px; left: 8px;
-	font-size: xx-small;
-	overflow: hidden;
-	position: absolute;
-	border-radius: 7px;
-	-webkit-transition-property: all;
-	-webkit-transition-duration: 0.3s;
-	-webkit-app-region: no-drag;
-	color: #CCC;
-	opacity: 1.0;
+.drag {
+	-webkit-app-region: drag;
 }
 
 #dragger
@@ -81,12 +42,59 @@
 	-webkit-transition-duration: 0.3s;
 }
 
-#btn_resize {right: 28px;}
-#btn_hide	{right: 48px;}
+#dragger a
+{
+	z-index: 2000;
+	content: '';
+	border: 0px solid #000;
+	background: #AAA;
+	padding: 0;
+	width: 14px;
+	height: 14px; line-height: 3px;
+	top: 8px; right: 8px;
+	font-size: xx-small;
+	overflow: hidden;
+	position: absolute;
+	border-radius: 7px;
+	-webkit-transition-property: all;
+	-webkit-transition-duration: 0.3s;
+	-webkit-app-region: no-drag;
+	color: #CCC;
+	opacity: 1.0;
+}
 
-#btn_close:hover {background: #b00f0f;}
-#btn_resize:hover {background: #0fb00f;}
-#btn_hide:hover {background: #d0a00f;}
+#dragger a:hover
+{
+	opacity: 1.0;
+}
+
+#dragger .back
+{
+	z-index: 2000;
+	content: '';
+	border: 0px solid #000;
+	background: #AAA;
+	padding: 0;
+	width: 22px;
+	height: 22px; line-height: 3px;
+	top: 8px; left: 8px;
+	font-size: xx-small;
+	overflow: hidden;
+	position: absolute;
+	border-radius: 7px;
+	-webkit-transition-property: all;
+	-webkit-transition-duration: 0.3s;
+	-webkit-app-region: no-drag;
+	color: #CCC;
+	opacity: 1.0;
+}
+
+#dragger .resize {right: 28px;}
+#dragger .hide	{right: 48px;}
+
+#dragger .close:hover {background: #b00f0f;}
+#dragger .resize:hover {background: #0fb00f;}
+#dragger .hide:hover {background: #d0a00f;}
 
 html, body {
 	background-color: #000000;
