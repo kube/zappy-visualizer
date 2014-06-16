@@ -19,10 +19,18 @@ var Block = function(map, x, y) {
 
 	this.mesh = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.2, 0.9), game.materials.block);
 	this.mesh.position.set(this.position.x, -0.1, this.position.y);
+	this.mesh.updateMatrix();
+	this.mesh.matrixAutoUpdate = false;
 	this.mesh.onclick = function(e, pick) {
 		// self.mesh.position.y += 0.5;
 	}
 	game.scene.add(this.mesh);
+
+
+	this.displayRessource = function(type) {
+		for (var i in self.ressources)
+			self.ressources[i].mesh.visible = (i == type || type == -1);
+	}
 }
 
 module.exports = Block;

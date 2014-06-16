@@ -19,6 +19,12 @@ var Map = function(game, width, height) {
 		}
 	}
 	initBlocks();
+
+	this.displayRessource = function(type) {
+		for (var i in self.blocks)
+			for (var j in self.blocks[i])
+				self.blocks[i][j].displayRessource(type);
+	}
 }
 
 module.exports = Map;

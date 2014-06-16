@@ -13,14 +13,16 @@ var Game = function(options) {
 	camera.position.z = 5;
 	var controls = new THREE.OrbitControls(camera);
 	var renderer = new THREE.WebGLRenderer({
-		canvas: canvas
+		canvas: canvas,
+		antialias: true
 	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
-	var light = new THREE.PointLight(0xFFFFFF, 100, 100);
-	light.position.set(30, -30, 10);
-	scene.add(light);
-
+	var ambientLight = new THREE.AmbientLight(0x111111);
+	var directionalLight = new THREE.DirectionalLight(0x666666);
+	directionalLight.position.set(1, 10, 1).normalize();
+	scene.add(ambientLight);
+	scene.add(directionalLight);
 
 	this.scene = scene;
 	this.renderer = renderer;
@@ -29,41 +31,32 @@ var Game = function(options) {
 		basic: new THREE.MeshBasicMaterial({
 			color: 0x37363f
 		}),
-		block: new THREE.MeshLambertMaterial({
-			color: 0x37363f,
-			shading: THREE.FlatShading
+		block: new THREE.MeshPhongMaterial({
+			color: 0x04020a
 		}),
 
 		ressources: [
-			new THREE.MeshLambertMaterial({
-				color: 0xdacd60,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0xdacd60
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0xda428c,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0xda428c
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0x8046db,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0x8046db
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0x40abdb,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0x40abdb
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0x47dc37,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0x47dc37
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0xdc6a28,
-				shading: THREE.FlatShading
+			new THREE.MeshBasicMaterial({
+				color: 0xdc6a28
 			}),
-			new THREE.MeshLambertMaterial({
-				color: 0xb1dc41,
-				shading: THREE.FlatShading
-			})
-		]
+			new THREE.MeshBasicMaterial({
+				color: 0xb1dc41
+			})]
 	};
 
 
@@ -84,6 +77,16 @@ var Game = function(options) {
 		if (pick.object && typeof pick.object.onclick == 'function')
 			pick.object.onclick(e);
 	});
+
+
+	var currentDisplayedRessource = -1;
+
+	window.addEventListener('keydown', function(e) {
+
+		currentDisplayedRessource = (currentDisplayedRessource + 2) % 8 - 1;
+		self.map.displayRessource(currentDisplayedRessource);
+	});
+
 
 	function runRenderLoop() {
 		window.requestAnimationFrame(runRenderLoop);
