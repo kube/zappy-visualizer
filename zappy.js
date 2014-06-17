@@ -63,20 +63,41 @@ function connectToServer(host, port) {
 		// Think about splitted sockets!
 		// Should split sockets at carriage return and keep the last part to be completed by next socket.
 		var responses = data.toString().split('\n');
+		console.log(responses);
+
 		for (var i in responses) {
 			var args = responses[i].split(' ');
+			args.int = function(i) {
+				return parseInt(this[i]);
+			}
 
 			/*
 			**	Responses parsing, will be bettered and put in another file
 			*/
-			if (args[0] == 'msz') {
-				game.createMap(args[1], args[2]);
-				game.run();
-				client.write('mct\n');
-			}
-			else if (args[0] == 'bct') {
-				for (var i = 3; i < 10; i++)
-					game.map.blocks[parseInt(args[1])][parseInt(args[2])].ressources[i - 3].update(parseInt(args[i]));
+			switch (args[0]) {
+
+				case 'msz':
+					game.createMap(args.int(1), args.int(2));
+					game.run();
+					client.write('mct\n');
+					break;
+
+				case 'bct':
+					for (var i = 3; i < 10; i++)
+						game.map.blocks[args.int(1)][args.int(2)].ressources[i - 3].update(args.int(i));
+					break;
+
+				//pnw #n X Y O L N
+				case 'pnw':
+					game.createBot(args.int(1), args.int(2), args.int(3), args.int(3), args.int(4), args[5]);
+					break;
+
+				//ppo #n X Y O
+				case 'ppo':
+					console.log(game.bots);
+					game.bots[args.int(1)].setPosition(args.int(2), args.int(3), args.int(4));
+					break;
+
 			}
 		}
 	});

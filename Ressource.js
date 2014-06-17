@@ -13,10 +13,10 @@ var Ressource = function(block, x, y, type) {
 	this.mesh.updateMatrix();
 	this.mesh.matrixAutoUpdate = false;
 	this.mesh.onclick = function(e, pick) {
-		if (e.metaKey)
-			self.remove(1);
-		else
-			self.add(1);
+		// if (e.metaKey)
+		// 	self.remove(1);
+		// else
+		// 	self.add(1);
 	}
 	game.scene.add(this.mesh);
 

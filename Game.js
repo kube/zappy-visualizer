@@ -87,7 +87,6 @@ var Game = function(options) {
 		self.map.displayRessource(currentDisplayedRessource);
 	});
 
-
 	function runRenderLoop() {
 		window.requestAnimationFrame(runRenderLoop);
 		renderer.render(scene, camera);
