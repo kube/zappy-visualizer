@@ -29,7 +29,7 @@ var Game = function(options) {
 	this.materials = {
 
 		basic: new THREE.MeshBasicMaterial({
-			color: 0x37363f
+			color: 0xada1e6
 		}),
 		block: new THREE.MeshPhongMaterial({
 			color: 0x04020a

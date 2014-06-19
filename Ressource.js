@@ -22,15 +22,16 @@ var Ressource = function(block, x, y, type) {
 
 
 	function refresh() {
-		if (self.quantity > 0)
-			self.mesh.visible = true;
-		else
-			self.mesh.visible = false;
 		self.mesh.scale.y = self.quantity / 5;
 		// self.mesh.scale.x = 0.8 + self.quantity / 10;
 		// self.mesh.scale.z = 0.8 + self.quantity / 10;
 		self.mesh.position.y = self.quantity / 10;
 		self.mesh.updateMatrix();
+
+		if (self.quantity > 0)
+			self.mesh.visible = true;
+		else
+			self.mesh.visible = false;
 	}
 
 	this.update = function(quantity) {

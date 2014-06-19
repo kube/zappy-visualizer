@@ -1,15 +1,16 @@
 var	net = require('net'),
 	gui = require('nw.gui'),
 	Game = require('./Game.js');
+	ResponseParser = require('./ResponseParser.js');
 
 global.THREE = THREE;
 
 process.on('uncaughtException', function(e) {
-	console.log(e);
-	console.log(e.message);
+	// console.log(e);
+	// console.log(e.message);
 
 	if (e.code == "ECONNREFUSED") {
-		console.log("Cannot reach the server");
+		// console.log("Cannot reach the server");
 		displayConnectionForm();
 	}
 });
@@ -39,8 +40,9 @@ function destroySession(client, game) {
 function connectToServer(host, port) {
 	displayGame();
 
-	var client = new net.Socket();
-	var game = new Game();
+	var	client = new net.Socket(),
+		game = new Game(),
+		responseParser = new ResponseParser(client, game);
 
 	// Attach event to Back button
 	document.getElementById('btnBack').addEventListener('click', function _func() {
@@ -48,9 +50,8 @@ function connectToServer(host, port) {
 		document.getElementById('btnBack').removeEventListener('click', _func);
 	});
 
-	client.connect(port, host,
-		function() {
-			client.write('msz\n');
+	client.connect(port, host, function() {
+
 	});
 
 	client.on('close', function() {
@@ -60,55 +61,23 @@ function connectToServer(host, port) {
 	});
 
 	client.on('data', function(data) {
-		// Think about splitted sockets!
-		// Should split sockets at carriage return and keep the last part to be completed by next socket.
 		var responses = data.toString().split('\n');
-		console.log(responses);
-
-		for (var i in responses) {
-			var args = responses[i].split(' ');
-			args.int = function(i) {
-				return parseInt(this[i]);
-			}
-
-			/*
-			**	Responses parsing, will be bettered and put in another file
-			*/
-			switch (args[0]) {
-
-				case 'msz':
-					game.createMap(args.int(1), args.int(2));
-					game.run();
-					client.write('mct\n');
-					break;
-
-				case 'bct':
-					for (var i = 3; i < 10; i++)
-						game.map.blocks[args.int(1)][args.int(2)].ressources[i - 3].update(args.int(i));
-					break;
-
-				//pnw #n X Y O L N
-				case 'pnw':
-					game.createBot(args.int(1), args.int(2), args.int(3), args.int(3), args.int(4), args[5]);
-					break;
-
-				//ppo #n X Y O
-				case 'ppo':
-					console.log(game.bots);
-					game.bots[args.int(1)].setPosition(args.int(2), args.int(3), args.int(4));
-					break;
-
-			}
-		}
+		for (var i in responses)
+			responseParser.push(responses[i]);
 	});
 
 	client.on('end', function() {
-		console.log('Client disconnected');
+		// console.log('Client disconnected');
 		destroySession(client, game);
 	});
 }
 
 function validateConnectionForm() {
+
+	// console.log('Conneting to '
+		// + document.getElementById('hostField').value
+		// + ' '
+		// + document.getElementById('portField').value);
 
 	connectToServer(
 		document.getElementById('hostField').value,
